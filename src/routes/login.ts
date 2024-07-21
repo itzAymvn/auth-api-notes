@@ -58,7 +58,9 @@ loginRouter.post("/", async (req, res) => {
 			userId: user._id,
 			token: token,
 			createdAt: new Date(),
-			expiresAt: new Date(Date.now() + TOKEN_EXPIRATION_IN_SECONDS),
+			expiresAt: new Date(
+				Date.now() + TOKEN_EXPIRATION_IN_SECONDS * 1000 // Convert seconds to milliseconds
+			),
 		})
 
 		await newToken.save().catch(console.error)
