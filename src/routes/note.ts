@@ -10,6 +10,7 @@ import Note from "../database/models/note"
 import mongoose from "mongoose"
 
 const noteRouter = Router()
+const NOTES_PER_PAGE = parseInt(process.env.NOTES_PER_PAGE as string) || 5
 
 // Get user notes
 noteRouter.get("/", async (req, res) => {
@@ -22,9 +23,41 @@ noteRouter.get("/", async (req, res) => {
 
 	const user = req.user
 
+	if (!req.query.page) {
+		const notes = await Note.find({ user: user._id }, { __v: 0, user: 0 })
+		return res.json({
+			success: true,
+			user_id: user._id,
+			notes: notes,
+		})
+	}
+
+	const page = parseInt(req.query.page as string) || 1
+	const totalDocuments = await Note.countDocuments({ user: user._id })
+	const totalPages = Math.ceil(totalDocuments / NOTES_PER_PAGE)
+
+	if (isNaN(page)) {
+		return res.status(400).json({
+			success: false,
+			message: "Invalid page number",
+		})
+	}
+
+	if (page > totalPages) {
+		return res.status(400).json({
+			success: false,
+			message: "Page number exceeds the total number of pages",
+		})
+	}
+
 	const notes = await Note.find({ user: user._id }, { __v: 0, user: 0 })
+		.skip((page - 1) * NOTES_PER_PAGE)
+		.limit(NOTES_PER_PAGE)
+
 	return res.json({
 		success: true,
+		total_pages: totalPages,
+		current_page: page,
 		user_id: user._id,
 		notes: notes,
 	})

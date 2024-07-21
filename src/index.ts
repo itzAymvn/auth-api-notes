@@ -37,6 +37,20 @@ const validateEnv = async () => {
 			)
 		}
 
+		if (!process.env?.PORT) {
+			console.log(
+				`PORT environment variable not provided. Using default port: 3000`
+			)
+			resolve(true)
+		}
+
+		if (!process.env?.NOTES_PER_PAGE) {
+			console.log(
+				`NOTES_PER_PAGE environment variable not provided. Using default value: 5`
+			)
+			resolve(true)
+		}
+
 		console.log(`Environment variables are valid`)
 		return resolve(true)
 	})
