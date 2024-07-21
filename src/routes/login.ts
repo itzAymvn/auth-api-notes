@@ -7,7 +7,7 @@
 
 import { Router } from "express"
 import User from "../database/models/user"
-import Token from "../database/models/Token"
+import Token from "../database/models/token"
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
