@@ -10,7 +10,13 @@ import Express from "express"
 import cors from "cors"
 import "dotenv/config"
 
-import { loginRouter, noteRouter, signupRouter, userRouter } from "./routes"
+import {
+	loginRouter,
+	noteRouter,
+	signupRouter,
+	userRouter,
+	logoutRouter,
+} from "./routes"
 import authenticateToken from "./middlewares/authenticateToken"
 
 const app = Express()
@@ -65,6 +71,7 @@ const main = async () => {
 
 	app.use("/user", authenticateToken, userRouter)
 	app.use("/note", authenticateToken, noteRouter)
+	app.use("/logout", authenticateToken, logoutRouter)
 
 	app.listen(PORT, () => {
 		console.log(`Server listening on http://localhost:${PORT}`)
